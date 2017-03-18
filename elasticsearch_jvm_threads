@@ -52,7 +52,7 @@ sub get_json_from_url {
     return $data;
 }
 
-my $data = get_json_from_url("http://$host:$port/_nodes/jvm");
+my $data = get_json_from_url("http://$host:$port/_nodes/_local/jvm");
 my $t_data = get_json_from_url("http://$host:$port/_nodes/stats/jvm");
 my %out = (count => 0, peak_count => 0);
 
