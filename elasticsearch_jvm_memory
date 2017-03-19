@@ -67,6 +67,7 @@ if ($ARGV[0] and $ARGV[0] eq 'config') {
     print "graph_title Elasticsearch JVM memory usage\n";
     print "graph_category elasticsearch\n";
     print "graph_vlabel Bytes\n";
+    print "graph_order heap_max heap_committed heap_used non_heap_committed non_heap_used\n";
 
     foreach my $name (keys %out) {
         print "$name.label $name\n"."$name.type GAUGE\n";
