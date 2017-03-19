@@ -70,6 +70,7 @@ if ($ARGV[0] and $ARGV[0] eq 'config') {
     print "graph_title elasticsearch cache\n";
     print "graph_category elasticsearch\n";
     print "graph_vlabel Bytes\n";
+    print "graph_order field_size filter_size\n";
 
     foreach my $name (keys %out) {
         print "$name.label $name\n"."$name.type GAUGE\n";
