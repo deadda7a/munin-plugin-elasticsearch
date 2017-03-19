@@ -73,7 +73,7 @@ foreach my $full_node_name (keys %{$data->{nodes}}) {
 }
 if ($ARGV[0] and $ARGV[0] eq 'config') {
     print "graph_args --base 1024\n";
-    print "graph_title elasticsearch cache\n";
+    print "graph_title Elasticsearch cache\n";
     print "graph_category elasticsearch\n";
     print "graph_vlabel Bytes\n";
     print "graph_order field_size filter_size request_cache_size\n";
