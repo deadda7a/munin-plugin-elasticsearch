@@ -54,15 +54,21 @@ sub get_json_from_url {
 
 my $data = get_json_from_url("http://$host:$port/_nodes/_local");
 my $t_data = get_json_from_url("http://$host:$port/_nodes/stats");
-my %out = (field_size => 0, filter_size => 0);
+my %out = (field_size => 0, filter_size => 0, request_cache_size => 0);
 
 foreach my $full_node_name (keys %{$data->{nodes}}) {
     next unless $t_data->{nodes}{$full_node_name};
     if (defined($t_data->{nodes}{$full_node_name}{indices}{fielddata})) {
         $out{field_size} += $t_data->{nodes}{$full_node_name}{indices}{fielddata}{memory_size_in_bytes};
     }
+    # for backwards compatability - filter_cache renamed query_cache
+    if (defined($t_data->{nodes}{$full_node_name}{indices}{filter_cache})) {
+        $out{filter_size} += $t_data->{nodes}{$full_node_name}{indices}{filter_cache}{memory_size_in_bytes};
     if (defined($t_data->{nodes}{$full_node_name}{indices}{query_cache})) {
         $out{filter_size} += $t_data->{nodes}{$full_node_name}{indices}{query_cache}{memory_size_in_bytes};
+    }
+    if (defined($t_data->{nodes}{$full_node_name}{indices}{request_cache})) {
+        $out{request_cache_size} += $t_data->{nodes}{$full_node_name}{indices}{request_cache}{memory_size_in_bytes};
     }
 }
 if ($ARGV[0] and $ARGV[0] eq 'config') {
@@ -70,7 +76,7 @@ if ($ARGV[0] and $ARGV[0] eq 'config') {
     print "graph_title elasticsearch cache\n";
     print "graph_category elasticsearch\n";
     print "graph_vlabel Bytes\n";
-    print "graph_order field_size filter_size\n";
+    print "graph_order field_size filter_size request_cache_size\n";
 
     foreach my $name (keys %out) {
         print "$name.label $name\n"."$name.type GAUGE\n";
