@@ -78,7 +78,7 @@ if ($ARGV[0] and $ARGV[0] eq 'config') {
     print "graph_title Elasticsearch JVM pools size\n";
     print "graph_category elasticsearch\n";
     print "graph_vlabel bytes\n";
-    print "graph_order young_used young_peak young_max survivor_used survivor_peak survivor_max old_used old_peak old_max\n";
+    print "graph_order old_used old_peak old_max survivor_used survivor_peak survivor_max young_used young_peak young_max\n";
 
     foreach my $name (keys %out) {
         print "$name.label $name\n"."$name.type GAUGE\n";
