@@ -59,12 +59,12 @@ if ($ARGV[0] and $ARGV[0] eq 'config') {
     print "graph_category elasticsearch\n";
     print "graph_scale no\n";
 
-    foreach my $name (grep { /_shards$/ } keys %$data) {
+    foreach my $name (grep { /_shards$/ } sort(keys %$data)) {
         print "$name.label $name\n"."$name.type GAUGE\n";
     }
 }
 elsif (!$ARGV[0] || $ARGV[0] eq 'autoconf') {
-    foreach my $name (grep { /_shards$/ } keys %$data) {
+    foreach my $name (grep { /_shards$/ } sort(keys %$data)) {
         print "$name.value " . $data->{$name} . "\n";
     }
 }
