@@ -86,6 +86,4 @@ sub get_json_from_url {
   return $data;
 }
 
-
-
 exit(0);
