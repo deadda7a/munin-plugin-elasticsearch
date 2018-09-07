@@ -46,23 +46,6 @@ my $password = exists $ENV{'password'} ? $ENV{'password'} : '';
 my $ua = LWP::UserAgent->new;
 $ua->timeout(10);
 
-sub get_json_from_url {
-  my $uri = shift;
-  my $x_user = shift;
-  my $x_password = shift;
-  my $request = GET $uri;
-
-  if ($x_user =~ '' && $x_password =~ '') {
-    $request->authorization_basic($x_user, $x_password);
-  }
-
-  my $res = $ua->request($request);
-  Carp::confess($res->code . " for " . $uri) unless $res->is_success;
-  my $data = do { local $@; eval { decode_json($res->content) } };
-  die("Could not decode JSON from: " . $res->content) unless $data;
-  return $data;
-}
-
 my $data = get_json_from_url("$proto$host:$port/_nodes", $user, $password);
 my $t_data = get_json_from_url("$proto$host:$port/_nodes/stats", $user, $password);
 my %out = (num_docs => 0);
@@ -85,5 +68,24 @@ elsif (!$ARGV[0] || $ARGV[0] eq 'autoconf') {
     print "$name.value " . $out{$name} . "\n";
   }
 }
+
+sub get_json_from_url {
+  my $uri = shift;
+  my $x_user = shift;
+  my $x_password = shift;
+  my $request = GET $uri;
+
+  if ($x_user =~ '' && $x_password =~ '') {
+    $request->authorization_basic($x_user, $x_password);
+  }
+
+  my $res = $ua->request($request);
+  Carp::confess($res->code . " for " . $uri) unless $res->is_success;
+  my $data = do { local $@; eval { decode_json($res->content) } };
+  die("Could not decode JSON from: " . $res->content) unless $data;
+  return $data;
+}
+
+
 
 exit(0);

@@ -48,7 +48,7 @@ Before use, put these settings into munin configuration.
 [elasticsearch_*]
 env.host localhost
 env.port 9200
-env.proto http
+env.proto http://
 env.user example
 env.password example
 ```
