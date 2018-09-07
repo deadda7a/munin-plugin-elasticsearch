@@ -28,12 +28,15 @@ This original codes has out of maintenance, so I have started maintenance this p
 
 * env.host - a elasticsearch node capable of providing stats interface (default localhost)
 * env.port - elasticsearch HTTP API port (default 9200)
+* env.proto - http(s)
+* env.user - Username for authentification
+* env.password - password for authentification
 
 ### Example Config
 
 Before use, put these settings into munin configuration.
 
-  * examples of munin config file 
+  * examples of munin config file
     *  in the case of all plugin config into single file.<br />
       `/etc/munin/plugin-conf.d/munin-node`
     * in the case of creating file per plugins.<br />
@@ -45,6 +48,9 @@ Before use, put these settings into munin configuration.
 [elasticsearch_*]
 env.host localhost
 env.port 9200
+env.proto http
+env.user example
+env.password example
 ```
 
 ## Install
