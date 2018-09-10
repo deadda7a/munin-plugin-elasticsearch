@@ -63,7 +63,7 @@ sub get_json_from_url {
   return $data;
 }
 
-my $data = get_json_from_url("http://$host:$port/_cluster/health");
+my $data = get_json_from_url("$proto$host:$port/_cluster/health");
 
 if ($ARGV[0] and $ARGV[0] eq 'config') {
     print "graph_title Elasticsearch cluster shards\n";

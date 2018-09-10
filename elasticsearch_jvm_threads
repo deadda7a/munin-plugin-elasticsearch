@@ -62,8 +62,8 @@ sub get_json_from_url {
   die("Could not decode JSON from: " . $res->content) unless $data;
   return $data;
 }
-my $data = get_json_from_url("http://$host:$port/_nodes/_local/jvm");
-my $t_data = get_json_from_url("http://$host:$port/_nodes/stats/jvm");
+my $data = get_json_from_url("$proto$host:$port/_nodes/_local/jvm");
+my $t_data = get_json_from_url("$proto$host:$port/_nodes/stats/jvm");
 my %out = (count => 0, peak_count => 0);
 
 foreach my $full_node_name (keys %{$data->{nodes}}) {

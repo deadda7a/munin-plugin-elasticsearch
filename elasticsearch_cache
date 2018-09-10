@@ -46,8 +46,8 @@ my $password = exists $ENV{'password'} ? $ENV{'password'} : '';
 my $ua = LWP::UserAgent->new;
 $ua->timeout(10);
 
-my $data = get_json_from_url("http://$host:$port/_nodes/_local");
-my $t_data = get_json_from_url("http://$host:$port/_nodes/stats");
+my $data = get_json_from_url("$proto$host:$port/_nodes/_local");
+my $t_data = get_json_from_url("$proto$host:$port/_nodes/stats");
 my %out = (field_size => 0, filter_size => 0, request_cache_size => 0);
 
 foreach my $full_node_name (keys %{$data->{nodes}}) {
@@ -87,10 +87,10 @@ sub get_json_from_url {
   my $uri = shift;
   my $x_user = shift;
   my $x_password = shift;
-  my $request = GET $uri;
+  my $request = new HTTP::Request('GET', $uri);
 
-  if ($x_user =~ '' && $x_password =~ '') {
-    $request->authorization_basic($x_user, $x_password);
+  if ($user =~ '' && $password =~ '') {
+    $request->authorization_basic($user, $password);
   }
 
   my $res = $ua->request($request);
