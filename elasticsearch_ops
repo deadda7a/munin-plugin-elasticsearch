@@ -1,0 +1,109 @@
+#!/usr/bin/env perl
+
+# Parameters supported:
+#
+# config
+# autoconf
+#
+# Magic markers:
+#%# family=auto
+#%# capabilities=autoconf
+
+use strict;
+use warnings;
+use LWP;
+use JSON qw/decode_json/;
+
+=head1 NAME
+
+elasticsearch_gc_time - A munin plugin that collects garbage collection time stats of your elasticsearch instances
+
+=head1 APPLICABLE SYSTEMS
+
+Elasticsearch
+
+=head1 CONFIGURATION
+
+None
+
+=head1 BUGS
+
+None known so far. If you find any, let me know.
+
+=head1 AUTHOR
+
+Timothy Messier (t0m) - c<< <tim.messier@gmail.com> >>
+Kentaro Yoshida - https://github.com/y-ken
+Sebastian Elisa Pfeifer - https://github.com/deadda7a
+
+=cut
+
+my $host = exists $ENV{'host'} ? $ENV{'host'} : 'localhost';
+my $port = exists $ENV{'port'} ? $ENV{'port'} : 9200;
+my $proto = exists $ENV{'proto'} ? $ENV{'proto'} : 'http://';
+my $user  = exists $ENV{'user'} ? $ENV{'user'} : '';
+my $password = exists $ENV{'password'} ? $ENV{'password'} : '';
+
+my $ua = LWP::UserAgent->new;
+$ua->timeout(10);
+
+sub get_json_from_url {
+  my $uri = shift;
+  my $x_user = shift;
+  my $x_password = shift;
+  my $request = new HTTP::Request('GET', $uri);
+
+  if ($user =~ '' && $password =~ '') {
+    $request->authorization_basic($user, $password);
+  }
+
+  my $res = $ua->request($request);
+  Carp::confess($res->code . " for " . $uri) unless $res->is_success;
+  my $data = do { local $@; eval { decode_json($res->content) } };
+  die("Could not decode JSON from: " . $res->content) unless $data;
+  return $data;
+}
+
+my $data = get_json_from_url("$proto$host:$port/_nodes/_local/stats");
+my %out = (index => 0, get => 0, search => 0, delete => 0);
+
+foreach my $full_node_name (keys %{$data->{nodes}}) {
+    next unless $data->{nodes}{$full_node_name};
+    if (defined($data->{nodes}{$full_node_name}{indices}{indexing}{index_total})) {
+        $out{index} += $data->{nodes}{$full_node_name}{indices}{indexing}{index_total};
+    }
+
+    if (defined($data->{nodes}{$full_node_name}{indices}{get}{total})) {
+        $out{index} += $data->{nodes}{$full_node_name}{indices}{get}{total};
+    }
+
+    if (defined($data->{nodes}{$full_node_name}{indices}{search}{query_total})) {
+        $out{index} += $data->{nodes}{$full_node_name}{indices}{search}{query_total};
+    }
+
+    if (defined($data->{nodes}{$full_node_name}{indices}{indexing}{delete_total})) {
+        $out{index} += $data->{nodes}{$full_node_name}{indices}{indexing}{delete_total};
+    }
+
+
+}
+if ($ARGV[0] and $ARGV[0] eq 'config') {
+    print "graph_title Elasticsearch gc time\n";
+    print "graph_category elasticsearch\n";
+    print "graph_vlabel seconds\n";
+    print "graph_order young old\n";
+
+    foreach my $name (keys %out) {
+        print "$name.label $name\n";
+        print "$name.type DERIVE\n";
+        print "$name.min 0\n";
+        print "$name.cdef $name,1000,/\n";
+    }
+}
+elsif (!$ARGV[0] || $ARGV[0] eq 'autoconf') {
+    foreach my $name (keys %out) {
+        print "$name.value " . $out{$name} . "\n";
+    }
+}
+
+exit(0);
