@@ -38,7 +38,6 @@ Kentaro Yoshida - https://github.com/y-ken
 =cut
 
 my $host = exists $ENV{'host'} ? $ENV{'host'} : 'localhost';
-my $host = exists $ENV{'host'} ? $ENV{'host'} : 'localhost';
 my $port = exists $ENV{'port'} ? $ENV{'port'} : 9200;
 my $proto = exists $ENV{'proto'} ? $ENV{'proto'} : 'http://';
 my $user  = exists $ENV{'user'} ? $ENV{'user'} : '';
