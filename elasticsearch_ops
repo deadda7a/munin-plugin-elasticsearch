@@ -70,22 +70,20 @@ my %out = (index => 0, get => 0, search => 0, delete => 0);
 foreach my $full_node_name (keys %{$data->{nodes}}) {
     next unless $data->{nodes}{$full_node_name};
     if (defined($data->{nodes}{$full_node_name}{indices}{indexing}{index_total})) {
-        $out{index} += $data->{nodes}{$full_node_name}{indices}{indexing}{index_total};
+      $out{index} += $data->{nodes}{$full_node_name}{indices}{indexing}{index_total};
     }
 
     if (defined($data->{nodes}{$full_node_name}{indices}{get}{total})) {
-        $out{index} += $data->{nodes}{$full_node_name}{indices}{get}{total};
+      $out{get} += $data->{nodes}{$full_node_name}{indices}{get}{total};
     }
 
     if (defined($data->{nodes}{$full_node_name}{indices}{search}{query_total})) {
-        $out{index} += $data->{nodes}{$full_node_name}{indices}{search}{query_total};
+      $out{search} += $data->{nodes}{$full_node_name}{indices}{search}{query_total};
     }
 
     if (defined($data->{nodes}{$full_node_name}{indices}{indexing}{delete_total})) {
-        $out{index} += $data->{nodes}{$full_node_name}{indices}{indexing}{delete_total};
+      $out{delete} += $data->{nodes}{$full_node_name}{indices}{indexing}{delete_total};
     }
-
-
 }
 if ($ARGV[0] and $ARGV[0] eq 'config') {
     print "graph_title Elasticsearch gc time\n";
