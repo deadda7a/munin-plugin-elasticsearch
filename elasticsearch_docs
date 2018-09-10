@@ -73,10 +73,10 @@ sub get_json_from_url {
   my $uri = shift;
   my $x_user = shift;
   my $x_password = shift;
-  my $request = GET $uri;
+  my $request = new HTTP::Request('GET', $uri);
 
-  if ($x_user =~ '' && $x_password =~ '') {
-    $request->authorization_basic($x_user, $x_password);
+  if ($user =~ '' && $password =~ '') {
+    $request->authorization_basic($user, $password);
   }
 
   my $res = $ua->request($request);
